@@ -1,10 +1,12 @@
 package com.sasi.Amazoff;
 
+import java.util.ArrayList;
+
 public class Order {
     private String id;
-    private String deliveryTime;
+    private Integer deliveryTime;
 
-    public String getDeliveryTime() {
+    public int getDeliveryTime() {
         return deliveryTime;
     }
     public Order() {
@@ -12,12 +14,15 @@ public class Order {
 
     public Order(String id, String deliveryTime) {
         this.id = id;
+        String[] time=deliveryTime.split(":");
 
-        this.deliveryTime = deliveryTime;
+        this.deliveryTime = Integer.parseInt(time[0])*60+Integer.parseInt( time[1]);
     }
 
     public void setDeliveryTime(String deliveryTime) {
-        this.deliveryTime = deliveryTime;
+        String[] time=deliveryTime.split(":");
+
+        this.deliveryTime = Integer.parseInt(time[0])*60+Integer.parseInt( time[1]);
     }
 
     public String getId() {

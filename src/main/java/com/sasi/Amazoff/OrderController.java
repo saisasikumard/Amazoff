@@ -60,6 +60,12 @@ public class OrderController {
         return new ResponseEntity(orderService.getUnassigned(),HttpStatus.ACCEPTED);
     }
 
+    @GetMapping("/get-count-of-orders-left-after-given-time/{time}/{partnerId}")
+    public ResponseEntity countOfOrderLeft(@PathVariable("time") String time,@PathVariable("partnerId") String pId){
+        return new ResponseEntity(orderService.countOfOrderLeft(time,pId),HttpStatus.ACCEPTED);
+
+    }
+
     @DeleteMapping("/delete-partner-by-id/{partnerId}")
     public ResponseEntity deletePartner(@PathVariable("partnerId") String id){
         return new ResponseEntity(orderService.deletePartner(id),HttpStatus.ACCEPTED);
@@ -68,6 +74,11 @@ public class OrderController {
     @DeleteMapping("/delete-order-by-id/{orderId}")
     public ResponseEntity deleteOrder(@PathVariable("orderId") String oId){
         return new ResponseEntity(orderService.deleteOrder(oId),HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/get-last-delivery-time/{partnerId}")
+    public ResponseEntity lastDeliveryTime(@PathVariable("partnerId") String pId){
+        return new ResponseEntity(orderService.lastDeliveryTime(pId),HttpStatus.ACCEPTED);
     }
 
 }

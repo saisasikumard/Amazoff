@@ -13,7 +13,7 @@ public class OrderRepository {
     Map<String,String> orderPartnerDB=new HashMap<>();
     Map<String, List<String>> partnerOrderDB =new HashMap<>();
 
-    int Assignedcount=0;
+
 
     public String addOrder(Order order) {
         if(orderDB.containsKey(order.getId())){
@@ -34,17 +34,22 @@ public class OrderRepository {
     }
 
     public String orderToPartner(String orderId, String partnerId) {
-        if(orderDB.containsKey(orderId)&& partnerOrderDB.containsKey(partnerId)){
+        if(orderDB.containsKey(orderId)&& deliveryPartnerDB.containsKey(partnerId)){
             orderPartnerDB.put(orderId,partnerId);
-            partnerOrderDB.put(partnerId,partnerOrderDB.get(partnerId));
-            if(partnerOrderDB.get(partnerId)==null){
-                partnerOrderDB.put(partnerId,new ArrayList<>());
-//            partnerOrderDB.get(partnerId).add(orderId);
-//            return "Order added to partner succesufuly";
+            List <String> presentOrders = new ArrayList<>();
+            if(partnerOrderDB.containsKey(partnerId)){
+                presentOrders=partnerOrderDB.get(partnerId);
             }
+            partnerOrderDB.put(partnerId,presentOrders);
+//            partnerOrderDB.put(partnerId,partnerOrderDB.get(partnerId));
+//            if(partnerOrderDB.get(partnerId)==null){
+//                partnerOrderDB.put(partnerId,new ArrayList<>());
+//           partnerOrderDB.get(partnerId).add(orderId);
+//            return "Order added to partner succesufuly";
+//            }
             partnerOrderDB.get(partnerId).add(orderId);
             deliveryPartnerDB.get(partnerId).getOrders().add(orderId);
-            Assignedcount++;
+
             return "Order added to partner succesufuly";
         }
         return "order or partner not Found..!";
@@ -64,11 +69,11 @@ public class OrderRepository {
     }
 
     public Set<String> getOrders() {
-        return orderDB.keySet();
+        return new TreeSet<>(orderDB.keySet());
     }
 
     public int getUnassigned() {
-        int rem=orderDB.size()-Assignedcount;
+        int rem=orderDB.size()-orderPartnerDB.size();
         return rem;
     }
 
@@ -79,7 +84,7 @@ public class OrderRepository {
            // orderPartnerDB.remove(orderPartnerDB.containsValue(id));
             orderPartnerDB.values().remove(id);
             partnerOrderDB.remove(id);
-            Assignedcount--;
+
             return "Deleted the Partner from System succesfully";
         }
         return "No partner is there..!";
@@ -108,5 +113,25 @@ public class OrderRepository {
         }
         return "Order not found there.....!!";
 
+    }
+
+    public Integer countOfOrderLeft(int checkTime, String pId) {
+        Integer count=0;
+        for(String oId:partnerOrderDB.get(pId)){
+            if(orderDB.get(oId).getDeliveryTime()>checkTime){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int lastDeliveryTime(String pId) {
+        int time=0;
+        for(String oId:partnerOrderDB.get(pId)){
+            if(orderDB.get(oId).getDeliveryTime()>time){
+                time=orderDB.get(oId).getDeliveryTime();
+            }
+        }
+        return time;
     }
 }
